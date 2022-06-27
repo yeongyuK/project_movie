@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="t">
+	<!-- mapper : DB에 쿼리문을 요청하고 결과를 돌려받는 속성파일 -->
+
+	<!-- 전체 게시글 조회 -->
+	<select id="ticket_list" resultType="movie">
+		select * from screening
+	</select>
+	
+	<!-- 일자별 상영작 조회 -->
+	<select id="ticket_list_first" resultType="movie" parameterType="String">
+		select * from screening where to_char(moviedate,'YYYY-MM-DD')='2022-07-01' order by movieIdx
+	</select>
+	
+	<select id="ticket_list_second" resultType="movie" parameterType="String">
+		select * from screening where to_char(moviedate,'YYYY-MM-DD')='2022-07-02' order by movieIdx
+	</select>
+	
+	<select id="ticket_list_third" resultType="movie" parameterType="String"> 
+		select * from screening where to_char(moviedate,'YYYY-MM-DD')='2022-07-03' order by movieIdx
+	</select>
+	
+	<select id="ticket_list_fourth" resultType="movie" parameterType="String">
+		select * from screening where to_char(moviedate,'YYYY-MM-DD')='2022-07-04' order by movieIdx
+	</select>
+	
+	<select id="ticket_list_fifth" resultType="movie" parameterType="String">
+		select * from screening where to_char(moviedate,'YYYY-MM-DD')='2022-07-05' order by movieIdx
+	</select>
+	
+	<!-- 예매 상세 페이지 정보 불러오기 -->
+	<select id="ticket_one" resultType="movie" parameterType="int">
+		select movietitle,to_char(moviedate,'YYYY-MM-DD') as movieDate,movietime,movieimage,movieIdx from screening where movieIdx=#{movieIdx} 
+	</select>
+	
+	<!-- 예매 정보 DB 입력 -->
+	<insert id="ticket_insert" parameterType="ticket">
+		insert into ticketing_board(
+			ticketId,
+			userId,
+			movieIdx,
+			adultCount,
+			childCount,
+			totalPrice) 
+		values(
+			#{ticketId},
+			#{userId},
+			#{movieIdx},
+			#{adultCount},
+			#{childCount},
+			#{totalPrice}
+		)
+	</insert>
+	
+	<!-- 예매 번호 생성쿼리 -->
+	<select id="ticket_id" resultType="String">
+		SELECT TO_cHAR(SYSDATE, 'YYYYMMDDHH24MISS')||DBMS_RANDOM.STRING('A', 4) FROM DUAL
+	</select>
+	
+	<!-- 예매번호로 예매확인 정보 불러오기 -->
+	<select id="ticket_info" resultType="ticket" parameterType="String">
+		select * from ticketing_board where ticketId = #{ticketId}
+	</select>
+	
+	<select id="ticket_count" resultType="int" parameterType="int">
+		select NVL(sum(adultCount) + sum(childCount),0) as totalCount from ticketing_board where movieIdx = #{movieIdx}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="m">
+	<!-- mapper : DB에 쿼리문을 요청하고 결과를 돌려받는 속성파일 -->
+
+	<!-- 전체 게시글 조회 -->
+	<select id="movie_list" resultType="movie">
+		select * from screening order by movieidx
+	</select>
+	
+	<!-- 페이지별 게시글 조회 -->
+	<select id="movie_list_page" resultType="movie" parameterType="java.util.HashMap">
+		select * from
+			( select rank() over( order by movieIdx ) no, s.* 
+  			from screening s )
+  			where no between #{start} and #{end}
+	</select>
+	
+	<!-- idx에 해당하는 게시글 한 건 조회 -->
+	<select id="movie_one" resultType="movie" parameterType="int">
+		select * from screening where movieIdx=#{movieIdx}
+	</select>
+
+	<!-- 게시글 검색 -->
+	<select id="movie_list_search" resultType="movie"
+		parameterType="String">
+		select * from screening where movieTitle like '%' || #{movieTitle} || '%'
+	</select>
+
+	<!-- 게시물 전체 수 -->
+	<select id="movie_count" resultType="int">
+		select count(*) from
+		screening 
+	</select>
+	
+	<!-- 검색된 게시물 수 -->
+	<select id="movie_search_count" resultType="int" parameterType="String">
+		select count(*) from screening
+		where movieTitle like '%' || #{movieTitle} || '%'
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
